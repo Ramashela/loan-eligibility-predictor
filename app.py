@@ -4,7 +4,6 @@ import os
 app = Flask(__name__)
 
 def predict_loan(income, loan_amount, credit_score, employed):
-
     score = 0
 
     if income > 3000:
@@ -20,9 +19,9 @@ def predict_loan(income, loan_amount, credit_score, employed):
         score += 1
 
     if score >= 3:
-        return "✅ Loan Approved"
+        return "Loan Approved"
     else:
-        return "❌ Loan Rejected"
+        return "Loan Rejected"
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -44,45 +43,46 @@ def home():
             employed
         )
 
-    return f"""
+    html = """
     <html>
     <head>
         <title>Loan Eligibility Predictor</title>
-        <style>
-            body {{
-                font-family: Arial;
-                max-width: 600px;
-                margin: 40px auto;
-                padding: 20px;
-            }}
-
-            input, select {{
-                width: 100%;
-                padding: 10px;
-                margin: 8px 0;
-            }}
-
-            button {{
-                width: 100%;
-                padding: 12px;
-                cursor: pointer;
-            }}
-
-            h1 {{
-                text-align: center;
-            }}
-
-            .result {{
-                margin-top: 20px;
-                font-size: 24px;
-                text-align: center;
-                font-weight: bold;
-            }}
-        </style>
     </head>
-
     <body>
+        <h1>Loan Eligibility Predictor</h1>
 
-        <h1>🏦 Loan Eligibility Predictor</h1>
+        <form method="post">
 
-        <form method
+            <p>Monthly Income</p>
+            <input type="number" name="income" required>
+
+            <p>Loan Amount</p>
+            <input type="number" name="loan_amount" required>
+
+            <p>Credit Score</p>
+            <input type="number" name="credit_score" required>
+
+            <p>Employed?</p>
+            <select name="employed">
+                <option>Yes</option>
+                <option>No</option>
+            </select>
+
+            <br><br>
+
+            <button type="submit">Predict</button>
+
+        </form>
+
+        <h2>RESULT_PLACEHOLDER</h2>
+
+    </body>
+    </html>
+    """
+
+    return html.replace("RESULT_PLACEHOLDER", result)
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
